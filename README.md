@@ -11,4 +11,7 @@ This is the project on handwritten Chinese character recognition using CNN super
    - penalty term
    - cross validation
    - ...
-4. An awesome website for visualized CNN: http://scs.ryerson.ca/~aharley/vis/conv/
+   
+## Some source:
+
+1. An awesome website for visualized CNN: http://scs.ryerson.ca/~aharley/vis/conv/
