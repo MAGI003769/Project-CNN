@@ -12,7 +12,7 @@ import types
 #im.save('gray.PNG')
 
 # gradient
-im = cv2.imread('.\\images\\lines.PNG', 0)
+im = cv2.imread('.\\images\\ba.PNG', 0)
 sobelx = cv2.Sobel(im, cv2.CV_64F, 0, 1, ksize=5)
 sobely = cv2.Sobel(im, cv2.CV_64F, 1, 0, ksize=5)
 gradx = sobelx.ravel().transpose()
