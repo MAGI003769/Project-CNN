@@ -8,7 +8,7 @@ sess = tf.Session()
 
 # Load data
 train_xdata = np.reshape(cv2.imread('.\\images\\doge.jpg'), (1, 256, 256, 3))
-print(train_xdata.shape)
+print('train_xdata.shape:', train_xdata.shape)
 train_labels = [0]
 
 # Set model parameters
@@ -63,14 +63,23 @@ def my_conv_net(input_data):
     max_pool1 = tf.nn.max_pool(relu1, ksize=[1, max_pool_size1, max_pool_size1, 1],
                                strides=[1, max_pool_size1, max_pool_size1, 1], padding='SAME')
 
+    print('Conv1:', conv1.shape)
+    print('relu1:', relu1.shape)
+    print('max_pool1:', max_pool1.shape)
+
     # Second Conv-ReLU-MaxPool Layer
     conv2 = tf.nn.conv2d(max_pool1, conv2_weight, strides=[1, 1, 1, 1], padding='SAME')
     relu2 = tf.nn.relu(tf.nn.bias_add(conv2, conv2_bias))
     max_pool2 = tf.nn.max_pool(relu2, ksize=[1, max_pool_size2, max_pool_size2, 1],
                                strides=[1, max_pool_size2, max_pool_size2, 1], padding='SAME')
 
+    print('Conv2:', conv2.shape)
+    print('relu2:', relu2.shape)
+    print('max_pool2:', max_pool2.shape)
+
     # Transform Output into a 1xN layer for next fully connected layer
     final_conv_shape = max_pool2.get_shape().as_list()
+    print('final_conv_shape:', final_conv_shape)
     final_shape = final_conv_shape[1] * final_conv_shape[2] * final_conv_shape[3]
     flat_output = tf.reshape(max_pool2, [final_conv_shape[0], final_shape])
 
