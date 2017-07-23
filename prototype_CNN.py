@@ -23,7 +23,6 @@ learning_rate = 0.005
 test_size = 20
 im_width = train_x[0].shape[0]
 im_height = train_x[0].shape[1]
-print(im_height)
 labels_size = 10
 num_channels = 3
 train_epochs = 500
@@ -98,47 +97,40 @@ def my_CNN(input):
 	relu1 = tf.nn.relu(tf.nn.bias_add(conv1, conv1_bias))
 	max_pool1 = tf.nn.max_pool(relu1, ksize=[1, max_pool_size1, max_pool_size1, 1],
 		                        strides=[1, max_pool_size1, max_pool_size1, 1], padding='SAME')
-	print('max_pool1:', max_pool1.shape)
 
 	# 2nd layer: 200C2-MP2
 	conv2 = tf.nn.conv2d(max_pool1, conv2_weight, strides=[1, 1, 1, 1], padding='SAME')
 	relu2 = tf.nn.relu(tf.nn.bias_add(conv2, conv2_bias))
 	max_pool2 = tf.nn.max_pool(relu2, ksize=[1, max_pool_size2, max_pool_size2, 1],
 		                        strides=[1, max_pool_size2, max_pool_size2, 1], padding='SAME')
-	print('max_pool2:', max_pool2.shape)
 
 	# 3rd layer: 300C2-MP2
 	conv3 = tf.nn.conv2d(max_pool2, conv3_weight, strides=[1, 1, 1, 1], padding='SAME')
 	relu3 = tf.nn.relu(tf.nn.bias_add(conv3, conv3_bias))
 	max_pool3 = tf.nn.max_pool(relu3, ksize=[1, max_pool_size3, max_pool_size3, 1],
 		                        strides=[1, max_pool_size3, max_pool_size3, 1], padding='SAME')
-	print('max_pool3:', max_pool3.shape)
 
 	# 4th layer: 400C2-MP2
 	conv4 = tf.nn.conv2d(max_pool3, conv4_weight, strides=[1, 1, 1, 1], padding='SAME')
 	relu4 = tf.nn.relu(tf.nn.bias_add(conv4, conv4_bias))
 	max_pool4 = tf.nn.max_pool(relu4, ksize=[1, max_pool_size4, max_pool_size4, 1],
 		                        strides=[1, max_pool_size4, max_pool_size4, 1], padding='SAME')
-	print('max_pool4:', max_pool4.shape)
-
+	
 	# 5th layer: 500C2-MP2
 	conv5 = tf.nn.conv2d(max_pool4, conv5_weight, strides=[1, 1, 1, 1], padding='SAME')
 	relu5 = tf.nn.relu(tf.nn.bias_add(conv5, conv5_bias))
 	max_pool5 = tf.nn.max_pool(relu5, ksize=[1, max_pool_size5, max_pool_size5, 1],
 		                        strides=[1, max_pool_size5, max_pool_size5, 1], padding='SAME')
-	print('max_pool5:', max_pool5.shape)
 
 	# 6th layer: 600C2-MP2
 	conv6 = tf.nn.conv2d(max_pool5, conv6_weight, strides=[1, 1, 1, 1], padding='SAME')
 	relu6 = tf.nn.relu(tf.nn.bias_add(conv6, conv6_bias))
 	max_pool6 = tf.nn.max_pool(relu6, ksize=[1, max_pool_size6, max_pool_size6, 1],
 		                        strides=[1, max_pool_size6, max_pool_size6, 1], padding='SAME')
-	print('max_pool6:', max_pool6.shape)
 
 	# 7th layer: 700C2
 	conv7 = tf.nn.conv2d(max_pool6, conv7_weight, strides=[1, 1, 1, 1], padding='SAME')
 	relu7 = tf.nn.relu(tf.nn.bias_add(conv7, conv7_bias))
-	print('relu7:', relu7.shape)
 
 	# Flat the output from conv layers for next fully connected layers
 	final_conv_shape = relu7.get_shape().as_list()
