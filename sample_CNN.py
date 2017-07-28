@@ -119,6 +119,8 @@ def get_accuracy(logits, targets):
 my_optimizer = tf.train.MomentumOptimizer(learning_rate, 0.9)
 train_step = my_optimizer.minimize(loss)
 
+writer = tf.summary.FileWriter('./graphs', sess.graph)
+
 # Initialize Variables
 init = tf.global_variables_initializer()
 sess.run(init)

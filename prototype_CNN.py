@@ -7,6 +7,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.python.framework import ops
 import cv2
+import tensorflow.contrib.slim as slim
 ops.reset_default_graph()
 
 # Start a graph session
@@ -92,58 +93,58 @@ full2_bias = weight_variable([labels_size])
 
 # Initialize Model Operations
 def my_CNN(input):
-	# 1st layer: 100C3-MP2
-	conv1 = tf.nn.conv2d(input, conv1_weight, strides=[1, 1, 1, 1], padding='SAME')
-	relu1 = tf.nn.relu(tf.nn.bias_add(conv1, conv1_bias))
-	max_pool1 = tf.nn.max_pool(relu1, ksize=[1, max_pool_size1, max_pool_size1, 1],
-		                        strides=[1, max_pool_size1, max_pool_size1, 1], padding='SAME')
+    # 1st layer: 100C3-MP2
+    conv1 = tf.nn.conv2d(input, conv1_weight, strides=[1, 1, 1, 1], padding='SAME')
+    relu1 = tf.nn.relu(tf.nn.bias_add(conv1, conv1_bias))
+    max_pool1 = tf.nn.max_pool(relu1, ksize=[1, max_pool_size1, max_pool_size1, 1],
+                                strides=[1, max_pool_size1, max_pool_size1, 1], padding='SAME')
 
-	# 2nd layer: 200C2-MP2
-	conv2 = tf.nn.conv2d(max_pool1, conv2_weight, strides=[1, 1, 1, 1], padding='SAME')
-	relu2 = tf.nn.relu(tf.nn.bias_add(conv2, conv2_bias))
-	max_pool2 = tf.nn.max_pool(relu2, ksize=[1, max_pool_size2, max_pool_size2, 1],
-		                        strides=[1, max_pool_size2, max_pool_size2, 1], padding='SAME')
+    # 2nd layer: 200C2-MP2
+    conv2 = tf.nn.conv2d(max_pool1, conv2_weight, strides=[1, 1, 1, 1], padding='SAME')
+    relu2 = tf.nn.relu(tf.nn.bias_add(conv2, conv2_bias))
+    max_pool2 = tf.nn.max_pool(relu2, ksize=[1, max_pool_size2, max_pool_size2, 1],
+                                strides=[1, max_pool_size2, max_pool_size2, 1], padding='SAME')
 
-	# 3rd layer: 300C2-MP2
-	conv3 = tf.nn.conv2d(max_pool2, conv3_weight, strides=[1, 1, 1, 1], padding='SAME')
-	relu3 = tf.nn.relu(tf.nn.bias_add(conv3, conv3_bias))
-	max_pool3 = tf.nn.max_pool(relu3, ksize=[1, max_pool_size3, max_pool_size3, 1],
-		                        strides=[1, max_pool_size3, max_pool_size3, 1], padding='SAME')
+    # 3rd layer: 300C2-MP2
+    conv3 = tf.nn.conv2d(max_pool2, conv3_weight, strides=[1, 1, 1, 1], padding='SAME')
+    relu3 = tf.nn.relu(tf.nn.bias_add(conv3, conv3_bias))
+    max_pool3 = tf.nn.max_pool(relu3, ksize=[1, max_pool_size3, max_pool_size3, 1],
+                                strides=[1, max_pool_size3, max_pool_size3, 1], padding='SAME')
 
-	# 4th layer: 400C2-MP2
-	conv4 = tf.nn.conv2d(max_pool3, conv4_weight, strides=[1, 1, 1, 1], padding='SAME')
-	relu4 = tf.nn.relu(tf.nn.bias_add(conv4, conv4_bias))
-	max_pool4 = tf.nn.max_pool(relu4, ksize=[1, max_pool_size4, max_pool_size4, 1],
-		                        strides=[1, max_pool_size4, max_pool_size4, 1], padding='SAME')
-	
-	# 5th layer: 500C2-MP2
-	conv5 = tf.nn.conv2d(max_pool4, conv5_weight, strides=[1, 1, 1, 1], padding='SAME')
-	relu5 = tf.nn.relu(tf.nn.bias_add(conv5, conv5_bias))
-	max_pool5 = tf.nn.max_pool(relu5, ksize=[1, max_pool_size5, max_pool_size5, 1],
-		                        strides=[1, max_pool_size5, max_pool_size5, 1], padding='SAME')
+    # 4th layer: 400C2-MP2
+    conv4 = tf.nn.conv2d(max_pool3, conv4_weight, strides=[1, 1, 1, 1], padding='SAME')
+    relu4 = tf.nn.relu(tf.nn.bias_add(conv4, conv4_bias))
+    max_pool4 = tf.nn.max_pool(relu4, ksize=[1, max_pool_size4, max_pool_size4, 1],
+                                strides=[1, max_pool_size4, max_pool_size4, 1], padding='SAME')
+    
+    # 5th layer: 500C2-MP2
+    conv5 = tf.nn.conv2d(max_pool4, conv5_weight, strides=[1, 1, 1, 1], padding='SAME')
+    relu5 = tf.nn.relu(tf.nn.bias_add(conv5, conv5_bias))
+    max_pool5 = tf.nn.max_pool(relu5, ksize=[1, max_pool_size5, max_pool_size5, 1],
+                                strides=[1, max_pool_size5, max_pool_size5, 1], padding='SAME')
 
-	# 6th layer: 600C2-MP2
-	conv6 = tf.nn.conv2d(max_pool5, conv6_weight, strides=[1, 1, 1, 1], padding='SAME')
-	relu6 = tf.nn.relu(tf.nn.bias_add(conv6, conv6_bias))
-	max_pool6 = tf.nn.max_pool(relu6, ksize=[1, max_pool_size6, max_pool_size6, 1],
-		                        strides=[1, max_pool_size6, max_pool_size6, 1], padding='SAME')
+    # 6th layer: 600C2-MP2
+    conv6 = tf.nn.conv2d(max_pool5, conv6_weight, strides=[1, 1, 1, 1], padding='SAME')
+    relu6 = tf.nn.relu(tf.nn.bias_add(conv6, conv6_bias))
+    max_pool6 = tf.nn.max_pool(relu6, ksize=[1, max_pool_size6, max_pool_size6, 1],
+                                strides=[1, max_pool_size6, max_pool_size6, 1], padding='SAME')
 
-	# 7th layer: 700C2
-	conv7 = tf.nn.conv2d(max_pool6, conv7_weight, strides=[1, 1, 1, 1], padding='SAME')
-	relu7 = tf.nn.relu(tf.nn.bias_add(conv7, conv7_bias))
+    # 7th layer: 700C2
+    conv7 = tf.nn.conv2d(max_pool6, conv7_weight, strides=[1, 1, 1, 1], padding='SAME')
+    relu7 = tf.nn.relu(tf.nn.bias_add(conv7, conv7_bias))
 
-	# Flat the output from conv layers for next fully connected layers
-	final_conv_shape = relu7.get_shape().as_list()
-	flat_shape = final_conv_shape[1] * final_conv_shape[2] * final_conv_shape[3]
-	flat_output = tf.reshape(relu7, [final_conv_shape[0], flat_shape])
+    # Flat the output from conv layers for next fully connected layers
+    final_conv_shape = relu7.get_shape().as_list()
+    flat_shape = final_conv_shape[1] * final_conv_shape[2] * final_conv_shape[3]
+    flat_output = tf.reshape(relu7, [final_conv_shape[0], flat_shape])
 
-	# 1st fully connected layer
-	fully_connected1 = tf.nn.relu(tf.add(tf.matmul(flat_output, full1_weight), full1_bias))
+    # 1st fully connected layer
+    fully_connected1 = tf.nn.relu(tf.add(tf.matmul(flat_output, full1_weight), full1_bias))
 
-	# 2nd fully connected layer
-	model_output = tf.add(tf.matmul(fully_connected1, full2_weight), full2_bias)
+    # 2nd fully connected layer
+    model_output = tf.add(tf.matmul(fully_connected1, full2_weight), full2_bias)
 
-	return(model_output)
+    return(model_output)
 
 model_output = my_CNN(x_input)
 
@@ -161,12 +162,16 @@ train_step = my_optimizer.minimize(loss)
 # In this function, batch_prediction is the ouput result from the CNN
 # while labels are the real label stored in dataset which trains the model
 def get_acc(logists, labels):
-	batch_predictions = np.argmax(logists, axis=1)
-	bingo = np.sum(np.equal(batch_predictions, labels))
-	return(100. * bingo/batch_predictions.shape[0])
+    batch_predictions = np.argmax(logists, axis=1)
+    bingo = np.sum(np.equal(batch_predictions, labels))
+    return(100. * bingo/batch_predictions.shape[0])
 
 # Run the model
 with tf.Session() as sess:
+    writer = tf.summary.FileWriter('./graphs', sess.graph)
     init = tf.global_variables_initializer()
     sess.run(init)
-    print(sess.run(prediction, {x_input: train_x}))
+    summary = sess.run(prediction, {x_input: train_x})
+    print(summary)
+
+writer.close()
