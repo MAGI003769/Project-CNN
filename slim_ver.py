@@ -128,8 +128,8 @@ with tf.Session() as sess:
     writer = tf.summary.FileWriter('./graphs', sess.graph)
     init = tf.global_variables_initializer()
     sess.run(init)
-    summary = sess.run(prediction, {x_input: train_x})
+    summary, predicted = sess.run([model_output, prediction], {x_input: train_x})
     for i in range(10):
-        print(summary[0][i])
+        print(summary[0][i], predicted[0][i])
 
 writer.close()
