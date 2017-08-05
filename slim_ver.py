@@ -17,9 +17,10 @@ sess = tf.Session()
 train_dir = '.\\images\\doge.jpg'
 test_dir = ''
 train_x = np.asarray([cv2.imread(train_dir)])
+print(np.asarray(cv2.imread(train_dir)))
 
 # Set model parameters
-batch_size = 1
+batch_size = 10
 learning_rate = 0.005
 test_size = 20
 im_width = train_x[0].shape[0]
@@ -48,9 +49,9 @@ max_pool_size6 = 2
 fully_connected1_size = 100
 
 # Declare model placeholders
-x_input_shape = (batch_size, im_width, im_height, num_channels)
+x_input_shape = (None, im_width, im_height, num_channels)
 x_input = tf.placeholder(tf.float32, shape=x_input_shape)
-y_label = tf.placeholder(tf.int32, shape=(batch_size))
+y_label = tf.placeholder(tf.int32, shape=(None))
 
 def weight_variable(shape):
     initial = tf.truncated_normal(shape, stddev = 0.1, dtype=tf.float32)
