@@ -1,3 +1,4 @@
+
 # Project-CNN
 
 This is the project on handwritten Chinese character recognition using CNN supervised by Dr. Jionglong Su.
@@ -19,3 +20,13 @@ This is the project on handwritten Chinese character recognition using CNN super
 ## Some sources:
 
 1. An awesome website for visualized CNN: http://scs.ryerson.ca/~aharley/vis/conv/
+
+
+## Result:
+1. Setting:
+   - Batch size = 30
+   - Training Epoch = 200
+   - Training Samples = 500
+   - Testing Sample = 390 (no batch in testing)
+![loss](soft_loss_200_30_500train_390test.png)
+![acc](acc_200_30_500train_390test.png)
