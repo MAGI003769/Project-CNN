@@ -8,27 +8,40 @@ import tensorflow as tf
 from tensorflow.python.framework import ops
 import cv2
 import tensorflow.contrib.slim as slim
+import scipy.io as sio
+
 ops.reset_default_graph()
 
 # Start a graph session
 sess = tf.Session()
 
-# Load data
-train_dir = '.\\images\\doge.jpg'
+# Read .mat files that store dataset
+train_data = sio.loadmat('new_my2data.mat')
+test_data = sio.loadmat('new_my3data.mat')
+
+# Load training data
+train_dir = ''
 test_dir = ''
-train_x = np.asarray([cv2.imread(train_dir)])
-print(np.asarray(cv2.imread(train_dir)))
+train_x = np.asarray([np.reshape(x, (192,192,10)) for x in train_data['pover'][:, 0:-1, :]])
+train_y = np.reshape(train_data['pover'][:, -1, 0], (train_data['pover'][:, -1, 0].shape[0]), )
+train_y = train_y.astype('int')
+print('train_y:\n', train_y.shape)
+
+# Load testing data
+test_x = np.asarray([np.reshape(x, (192,192,10)) for x in test_data['pover'][:, 0:-1, :]])
+test_y = np.reshape(test_data['pover'][:, -1, 0], (test_data['pover'][:, -1, 0].shape[0]), )
+test_y = test_y.astype('int')
+print('test_y:\n', test_y.shape)
 
 # Set model parameters
-batch_size = 10
+batch_size = 20
 learning_rate = 0.005
-test_size = 20
 im_width = train_x[0].shape[0]
 im_height = train_x[0].shape[1]
+num_channels = 10
 labels_size = 10
-num_channels = 3
-train_epochs = 500
-keep_prob = 1
+train_epochs = 200
+keep_prob = 0.7
 
 conv1_output = 100
 conv2_output = 200
@@ -104,7 +117,7 @@ def my_CNN(input):
 
     return(model_output)
 
-model_output = my_CNN(x_input)
+model_output = my_CNN(x_input) #(?, 10)
 
 # Declare Loss function (softmax cross entropy)
 loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=model_output, labels=y_label))
@@ -124,13 +137,54 @@ def get_acc(logits, labels):
     bingo = np.sum(np.equal(batch_predictions, labels))
     return(100. * bingo/batch_predictions.shape[0])
 
+
+train_loss = []
+train_acc = []
+test_acc = []
 # Run the model
 with tf.Session() as sess:
     writer = tf.summary.FileWriter('./graphs', sess.graph)
     init = tf.global_variables_initializer()
     sess.run(init)
-    summary, predicted = sess.run([model_output, prediction], {x_input: train_x})
-    for i in range(10):
-        print(summary[0][i], predicted[0][i])
+    for i in range(train_epochs):
+        rand_index = np.random.choice(len(train_x), size=batch_size)
+        rand_x = train_x[rand_index]
+        rand_y = train_y[rand_index]
+        #print('rand_x:', rand_x.shape)
+        #print('rand_y:', rand_y.shape)
+        train_dict = {x_input: rand_x, y_label: rand_y}
+
+        sess.run(train_step, feed_dict=train_dict)
+        temp_train_loss, temp_train_preds = sess.run([loss, prediction], feed_dict=train_dict)
+        #print('temp_train_preds:', temp_train_preds.shape)
+        temp_train_acc = get_acc(temp_train_preds, rand_y)
+        #print('rand_y', rand_y)
+        #print('temp_train_preds:', temp_train_preds)
+
+        temp_test_preds = sess.run(prediction, feed_dict={x_input: test_x, y_label: test_y})
+        temp_test_acc = get_acc(temp_test_preds, test_y)
+
+        train_loss.append(temp_train_loss)
+        train_acc.append(temp_train_acc)
+        test_acc.append(temp_test_acc)
+
+        print('Epoch %d finished'%i)
 
 writer.close()
+
+epoch_plot = range(0, train_epochs)
+# Plot train 
+plt.plot(epoch_plot, train_loss, '-b')
+plt.title('Softmax Loss per Generation')
+plt.xlabel('Generation')
+plt.ylabel('Softmax Loss')
+plt.show()
+
+# Plot train and test accuracy
+plt.plot(epoch_plot, train_acc, 'k-', label='Train Set Accuracy')
+plt.plot(epoch_plot, test_acc, 'r--', label='Test Set Accuracy')
+plt.title('Train and Test Accuracy')
+plt.xlabel('Generation')
+plt.ylabel('Accuracy')
+plt.legend(loc='lower right')
+plt.show()

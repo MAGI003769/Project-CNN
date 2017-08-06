@@ -27,6 +27,9 @@ test_xdata = np.array([np.reshape(x, (28,28)) for x in mnist.test.images])
 train_labels = mnist.train.labels
 test_labels = mnist.test.labels
 
+print(train_xdata.shape)
+print(train_labels.shape)
+
 # Set model parameters
 batch_size = 100
 learning_rate = 0.005
@@ -133,7 +136,9 @@ for i in range(generations):
     rand_index = np.random.choice(len(train_xdata), size=batch_size)
     rand_x = train_xdata[rand_index]
     rand_x = np.expand_dims(rand_x, 3)
+    print('rand_x:', rand_x.shape)
     rand_y = train_labels[rand_index]
+    print('rand_y:', rand_y.shape)
     train_dict = {x_input: rand_x, y_target: rand_y}
     
     sess.run(train_step, feed_dict=train_dict)
