@@ -20,19 +20,19 @@ train_data = sio.loadmat('.\\dataset\\train1data.mat')
 test_data = sio.loadmat('.\\dataset\\testdata.mat')
 
 # Load training data
-train_x = np.asarray([np.reshape(x, (192,192,10)) for x in train_data['pover'][:, 0:-1, :]])
-train_y = np.reshape(train_data['pover'][:, -1, 0], (train_data['pover'][:, -1, 0].shape[0]), )
+train_x = np.asarray([np.reshape(x, (192,192,10), order='F') for x in train_data['pover'][:, 0:-1, :]])
+train_y = train_data['pover'][:, -1, 0]
 train_y = train_y.astype('int')
 print('train_y:\n', train_y.shape)
 
 # Load testing data
-test_x = np.asarray([np.reshape(x, (192,192,10)) for x in test_data['pover'][:, 0:-1, :]])
-test_y = np.reshape(test_data['pover'][:, -1, 0], (test_data['pover'][:, -1, 0].shape[0]), )
+test_x = np.asarray([np.reshape(x, (192,192,10), order='F') for x in test_data['pover'][:, 0:-1, :]])
+test_y = test_data['pover'][:, -1, 0]
 test_y = test_y.astype('int')
 print('test_y:\n', test_y.shape)
 
 # Set model parameters
-batch_size = 35
+batch_size = 50
 learning_rate = 0.005
 im_width = train_x[0].shape[0]
 im_height = train_x[0].shape[1]
