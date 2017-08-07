@@ -16,12 +16,10 @@ ops.reset_default_graph()
 sess = tf.Session()
 
 # Read .mat files that store dataset
-train_data = sio.loadmat('new_my2data.mat')
-test_data = sio.loadmat('new_my3data.mat')
+train_data = sio.loadmat('.\\dataset\\train1data.mat')
+test_data = sio.loadmat('.\\dataset\\testdata.mat')
 
 # Load training data
-train_dir = ''
-test_dir = ''
 train_x = np.asarray([np.reshape(x, (192,192,10)) for x in train_data['pover'][:, 0:-1, :]])
 train_y = np.reshape(train_data['pover'][:, -1, 0], (train_data['pover'][:, -1, 0].shape[0]), )
 train_y = train_y.astype('int')
@@ -34,14 +32,14 @@ test_y = test_y.astype('int')
 print('test_y:\n', test_y.shape)
 
 # Set model parameters
-batch_size = 20
+batch_size = 35
 learning_rate = 0.005
 im_width = train_x[0].shape[0]
 im_height = train_x[0].shape[1]
 num_channels = 10
 labels_size = 10
-train_epochs = 200
-keep_prob = 0.7
+train_epochs = 500
+keep_prob = 0.5
 
 conv1_output = 100
 conv2_output = 200
