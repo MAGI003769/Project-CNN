@@ -35,7 +35,7 @@ This is the project on handwritten Chinese character recognition using CNN super
 ![acc](acc_200_30_500train_390test.png)
 
 2. Second experiment setting:
-   - Batch size = 30
+   - Batch size = 35
    - Training Epoch = 500
    - Training Samples = 500
    - Testing Sample = 350 (batch size = 30 in testing)
