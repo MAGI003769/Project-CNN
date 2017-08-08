@@ -62,16 +62,18 @@ Epoch:1200  Batch size:50
 ![acc](images/accuracy_1200_50.png)
 
 ### Experiment Notes:
-1. 7th Aug
+#### 7th Aug
    - When samples are added up to 500 from 220, the loss converges better.
    - Adjustment batch size cannot resolve the problem of sever oscillation of testing accuracy.
    - It might be possible to use more samples to train for a better performance.
-2. 8th Aug
+
+#### 8th Aug
    - The result not good.
    - The original code is too naive, which simply read entire dataset into memory. Once the dataset is enlarged into a enormous scale, there will be problem with memory.
-3. 9th Aug
-   Thinking of the advance program:
-   - The key part is the class `DataIterator` which is initialized with the directory of dataset.
-   - For this crucial class, its method `input_pipeline` split the whole dataset and read it into memory. That's where we should pay attention and make some modification to read a 10-channel data. This method returns data for a batch and feed it into the network.
-   - The funtion `build_graph` returns a variable of type dictionary taht contains valuable information and variables used of this model.
+
+#### 9th Aug
+   1. Thinking of the advance program:
+      - The key part is the class `DataIterator` which is initialized with the directory of dataset.
+      - For this crucial class, its method `input_pipeline` split the whole dataset and read it into memory. That's where we should pay attention and make some modification to read a 10-channel data. This method returns data for a batch and feed it into the network.
+      - The funtion `build_graph` returns a variable of type dictionary taht contains valuable information and variables used of this model.
    
