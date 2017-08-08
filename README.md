@@ -60,8 +60,8 @@ Epoch:1200  Batch size:50
 ### Experiment Notes:
 1. 7th Aug
    - When samples are added up to 500 from 220, the loss converges better.
+   - Adjustment batch size cannot resolve the problem of sever oscillation of testing accuracy.
+   - It might be possible to use more samples to train for a better performance.
 2. 8th Aug
    - The result not good.
    - The original code is too simple. Once the dataset is enlarged into a enormous scale, there will be problem with memory.
-   - Adjustment batch size cannot resolve the problem of sever oscillation of testing accuracy.
-   - It might be possible to use more samples to train for a better performance as the ratio of 
