@@ -2,11 +2,12 @@
 # ------------------------ #
 # In general, x_data represents images while y_data represents labels. #
 
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 from tensorflow.python.framework import ops
-import cv2
 import tensorflow.contrib.slim as slim
 import scipy.io as sio
 
@@ -22,7 +23,7 @@ sess = tf.Session()
 train_x = []
 train_y = []
 for i in range(4):
-    data = sio.loadmat('.\\dataset\\train'+str(i+1)+'data.mat')
+    data = sio.loadmat('./dataset/train'+str(i+1)+'data.mat')
     train_x = train_x + [np.reshape(x, (192,192,10), order='F') for x in data['pover'][:, 0:-1, :]]
     train_y = train_y + [x for x in data['pover'][:, -1, 0]]
 train_x = np.asarray(train_x)
@@ -31,7 +32,7 @@ print('train_y:\n', train_y.shape)
 
 
 # Load testing data
-test_data = sio.loadmat('.\\dataset\\testdata.mat')
+test_data = sio.loadmat('./dataset/testdata.mat')
 test_x = np.asarray([np.reshape(x, (192,192,10), order='F') for x in test_data['pover'][:, 0:-1, :]])
 test_y = test_data['pover'][:, -1, 0]
 test_y = test_y.astype('int')
@@ -46,7 +47,7 @@ im_width = train_x[0].shape[0]
 im_height = train_x[0].shape[1]
 num_channels = 10
 labels_size = 10
-train_epochs = 1000
+train_epochs = 1200
 keep_prob = 0.5
 
 conv1_output = 100
@@ -76,7 +77,7 @@ y_label = tf.placeholder(tf.int32, shape=(None))
 
 # Initialize Model Operations
 def my_CNN(input):
-    with tf.device('/gpu:0'):
+    with tf.device('/cpu:0'):
         # 1st layer: 100C3-MP2
         conv_1 = slim.conv2d(input, 100, [3, 3], 1, padding='SAME', scope='conv1',activation_fn=tf.nn.relu)
         max_pool1 = slim.max_pool2d(conv_1, [2, 2], [2, 2], padding='SAME')
@@ -117,18 +118,17 @@ def my_CNN(input):
 
     return(model_output)
 
-with tf.device('/gpu:0'):
-    model_output = my_CNN(x_input) #(?, 10)
+model_output = my_CNN(x_input) #(?, 10)
 
-    # Declare Loss function (softmax cross entropy)
-    loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=model_output, labels=y_label))
+# Declare Loss function (softmax cross entropy)
+loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=model_output, labels=y_label))
 
-    # Creat a prediction function
-    prediction = tf.nn.softmax(model_output)
+# Creat a prediction function
+prediction = tf.nn.softmax(model_output)
 
-    # Create an optimizer
-    my_optimizer = tf.train.AdamOptimizer(learning_rate)
-    train_step = my_optimizer.minimize(loss)
+# Create an optimizer
+my_optimizer = tf.train.MomentumOptimizer(learning_rate, 0.9)
+train_step = my_optimizer.minimize(loss)
 
 
 # Calculate accuracy function
@@ -165,9 +165,9 @@ with tf.Session() as sess:
         #print('temp_train_preds:', temp_train_preds)
 
         # ------------- feed testing set ------------ #
-        # ------------- evaluate every 5 epoch ------------ #
+        # ------------- evaluate every 50 epochs ------------ #
 
-        if (i+1) % 5 == 0:
+        if (i+1) % 50 == 0:
             temp_test_preds = sess.run(prediction, feed_dict={x_input: test_x, y_label: test_y})
             temp_test_acc = get_acc(temp_test_preds, test_y)
 
@@ -180,13 +180,14 @@ with tf.Session() as sess:
 
 writer.close()
 
-epoch_plot = range(0, train_epochs, 5)
+epoch_plot = range(0, train_epochs, 50)
 # Plot train 
 plt.plot(epoch_plot, train_loss, '-b')
 plt.title('Softmax Loss per Generation')
 plt.xlabel('Generation')
 plt.ylabel('Softmax Loss')
-plt.savefig('soft_loss_%d_%d.png'%(epoch, batch_size))
+plt.savefig('soft_loss_%d_%d.png'%(train_epochs, batch_size))
+plt.clf()
 
 # Plot train and test accuracy
 plt.plot(epoch_plot, train_acc, 'k-', label='Train Set Accuracy')
@@ -195,4 +196,4 @@ plt.title('Train and Test Accuracy')
 plt.xlabel('Generation')
 plt.ylabel('Accuracy')
 plt.legend(loc='lower right')
-plt.savefig('accuracy_%d_%d.png'%(epoch, batch_size))
+plt.savefig('accuracy_%d_%d.png'%(train_epochs, batch_size))
