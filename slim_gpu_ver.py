@@ -76,60 +76,59 @@ y_label = tf.placeholder(tf.int32, shape=(None))
 
 # Initialize Model Operations
 def my_CNN(input):
-    # 1st layer: 100C3-MP2
-    conv_1 = slim.conv2d(input, 100, [3, 3], 1, padding='SAME', scope='conv1',activation_fn=tf.nn.relu)
-    max_pool1 = slim.max_pool2d(conv_1, [2, 2], [2, 2], padding='SAME')
+    with tf.device('/gpu:0'):
+        # 1st layer: 100C3-MP2
+        conv_1 = slim.conv2d(input, 100, [3, 3], 1, padding='SAME', scope='conv1',activation_fn=tf.nn.relu)
+        max_pool1 = slim.max_pool2d(conv_1, [2, 2], [2, 2], padding='SAME')
 
-    # 2nd layer: 200C2-MP2
-    conv_2 = slim.conv2d(max_pool1, 200, [2, 2], 1, padding='SAME', scope='conv2',activation_fn=tf.nn.relu)
-    max_pool2 = max_pool_1 = slim.max_pool2d(conv_2, [2, 2], [2, 2], padding='SAME')
+        # 2nd layer: 200C2-MP2
+        conv_2 = slim.conv2d(max_pool1, 200, [2, 2], 1, padding='SAME', scope='conv2',activation_fn=tf.nn.relu)
+        max_pool2 = max_pool_1 = slim.max_pool2d(conv_2, [2, 2], [2, 2], padding='SAME')
 
-    # 3rd layer: 300C2-MP2
-    conv_3 = slim.conv2d(max_pool2, 300, [2, 2], 1, padding='SAME', scope='conv3',activation_fn=tf.nn.relu)
-    max_pool3 = max_pool_1 = slim.max_pool2d(conv_3, [2, 2], [2, 2], padding='SAME')
+        # 3rd layer: 300C2-MP2
+        conv_3 = slim.conv2d(max_pool2, 300, [2, 2], 1, padding='SAME', scope='conv3',activation_fn=tf.nn.relu)
+        max_pool3 = max_pool_1 = slim.max_pool2d(conv_3, [2, 2], [2, 2], padding='SAME')
 
-    # 4th layer: 400C2-MP2
-    conv_4 = slim.conv2d(max_pool3, 400, [2, 2], 1, padding='SAME', scope='conv4',activation_fn=tf.nn.relu)
-    max_pool4 = max_pool_1 = slim.max_pool2d(conv_4, [2, 2], [2, 2], padding='SAME')
+        # 4th layer: 400C2-MP2
+        conv_4 = slim.conv2d(max_pool3, 400, [2, 2], 1, padding='SAME', scope='conv4',activation_fn=tf.nn.relu)
+        max_pool4 = max_pool_1 = slim.max_pool2d(conv_4, [2, 2], [2, 2], padding='SAME')
     
-    # 5th layer: 500C2-MP2
-    conv_5 = slim.conv2d(max_pool4, 500, [2, 2], 1, padding='SAME', scope='conv5',activation_fn=tf.nn.relu)
-    max_pool5 = max_pool_1 = slim.max_pool2d(conv_5, [2, 2], [2, 2], padding='SAME')
+        # 5th layer: 500C2-MP2
+        conv_5 = slim.conv2d(max_pool4, 500, [2, 2], 1, padding='SAME', scope='conv5',activation_fn=tf.nn.relu)
+        max_pool5 = max_pool_1 = slim.max_pool2d(conv_5, [2, 2], [2, 2], padding='SAME')
 
-    # 6th layer: 600C2-MP2
-    conv_6 = slim.conv2d(max_pool5, 600, [2, 2], 1, padding='SAME', scope='conv6',activation_fn=tf.nn.relu)
-    max_pool6 = max_pool_1 = slim.max_pool2d(conv_6, [2, 2], [2, 2], padding='SAME')
+        # 6th layer: 600C2-MP2
+        conv_6 = slim.conv2d(max_pool5, 600, [2, 2], 1, padding='SAME', scope='conv6',activation_fn=tf.nn.relu)
+        max_pool6 = max_pool_1 = slim.max_pool2d(conv_6, [2, 2], [2, 2], padding='SAME')
 
-    # 7th layer: 700C2
-    conv_7 = slim.conv2d(max_pool6, 700, [2, 2], 1, padding='SAME', scope='conv7',activation_fn=tf.nn.relu)
+        # 7th layer: 700C2
+        conv_7 = slim.conv2d(max_pool6, 700, [2, 2], 1, padding='SAME', scope='conv7',activation_fn=tf.nn.relu)
 
-    # Flat the output from conv layers for next fully connected layers
-    flatten = slim.flatten(conv_7)
+        # Flat the output from conv layers for next fully connected layers
+        flatten = slim.flatten(conv_7)
     
-    # 1st fully connected layer
-    fc1 = slim.fully_connected(slim.dropout(flatten, keep_prob), 1024,
+        # 1st fully connected layer
+        fc1 = slim.fully_connected(slim.dropout(flatten, keep_prob), 1024,
                                    activation_fn=tf.nn.tanh, scope='fc1')
 
-    # 2nd fully connected layer
-    model_output = slim.fully_connected(slim.dropout(fc1, keep_prob), labels_size,
+        # 2nd fully connected layer
+        model_output = slim.fully_connected(slim.dropout(fc1, keep_prob), labels_size,
                                    activation_fn=None, scope='fc2')
 
     return(model_output)
 
-model_output = my_CNN(x_input) #(?, 10)
+with tf.device('/gpu:0'):
+    model_output = my_CNN(x_input) #(?, 10)
 
+    # Declare Loss function (softmax cross entropy)
+    loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=model_output, labels=y_label))
 
-# Declare Loss function (softmax cross entropy)
-loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=model_output, labels=y_label))
+    # Creat a prediction function
+    prediction = tf.nn.softmax(model_output)
 
-
-# Creat a prediction function
-prediction = tf.nn.softmax(model_output)
-
-
-# Create an optimizer
-my_optimizer = tf.train.AdamOptimizer(learning_rate)
-train_step = my_optimizer.minimize(loss)
+    # Create an optimizer
+    my_optimizer = tf.train.AdamOptimizer(learning_rate)
+    train_step = my_optimizer.minimize(loss)
 
 
 # Calculate accuracy function
