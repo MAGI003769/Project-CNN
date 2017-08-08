@@ -16,7 +16,7 @@ This is the project on handwritten Chinese character recognition using CNN super
 4. Dataset construction
    - Need to store in a 3-D form (width, height, channels) which is easy to read into program
    - Try to store data into .mat file from which data can be read in 3-D for directly by [scipy.io](https://docs.scipy.org/doc/scipy-0.19.1/reference/io.html)
-![3D](.\images\3D_dataset.PNG)
+![3D](images/3D_dataset.PNG)
    - Following are 3 samples of handwritten character '啊'.
 ![a_12](images/a_12.png)
 ![a_24](images/a_24.png)
