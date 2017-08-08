@@ -51,11 +51,11 @@ The testing accuracy settles around only 93~94%
 
 Epoch:2400  Batch size:25
 ![loss](images/soft_loss_2400_25.png)
-![acc](images/accuracy_200_2400_25.png)
+![acc](images/accuracy_2400_25.png)
 
 Epoch:1200  Batch size:50
 ![loss](images/soft_loss_1200_50.png)
-![acc](images/accuracy_200_1200_50.png)
+![acc](images/accuracy_1200_50.png)
 
 ### Experiment Notes:
 1. 7th Aug
