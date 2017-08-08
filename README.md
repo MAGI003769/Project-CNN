@@ -18,9 +18,9 @@ This is the project on handwritten Chinese character recognition using CNN super
    - Try to store data into .mat file from which data can be read in 3-D for directly by [scipy.io](https://docs.scipy.org/doc/scipy-0.19.1/reference/io.html)
 ![3D](.\images\3D_dataset.PNG)
    - Following are 3 samples of handwritten character '啊'.
-![a_12](.\images\a_12.png)
-![a_24](.\images\a_24.png)
-![a_36](.\images\a_36.png)
+![a_12](images\a_12.png)
+![a_24](images\a_24.png)
+![a_36](images\a_36.png)
 
 ## Some sources:
 
@@ -35,16 +35,16 @@ This is the project on handwritten Chinese character recognition using CNN super
    - Training Epoch = 200
    - Training Samples = 500
    - Testing Sample = 350 (no batch in testing)
-![loss](.\images\soft_loss_200_30_500train_390test.png)
-![acc](.\images\acc_200_30_500train_390test.png)
+![loss](images\soft_loss_200_30_500train_390test.png)
+![acc](images\acc_200_30_500train_390test.png)
 
 2. Second experiment setting:
    - Batch size = 35
    - Training Epoch = 500
    - Training Samples = 500
    - Testing Sample = 350 (batch size = 30 in testing)
-![loss](.\images\soft_loss_500_35_500_350.png)
-![acc](.\images\acc_500_35_500_350.png)
+![loss](images\soft_loss_500_35_500_350.png)
+![acc](images\acc_500_35_500_350.png)
 
 ### Experiment Notes:
 1. 7th Aug
