@@ -25,6 +25,8 @@ This is the project on handwritten Chinese character recognition using CNN super
 ## Some sources:
 
 1. An awesome website for visualized CNN: http://scs.ryerson.ca/~aharley/vis/conv/
+2. A simple implementation of [handwritten characaters recognition](http://blog.topspeedsnail.com/archives/10897)
+3. An advance implementation from [soloice's repo](https://github.com/soloice/Chinese-Character-Recognition)
 
 
 ## Experiment:
