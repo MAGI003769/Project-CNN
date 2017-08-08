@@ -46,8 +46,22 @@ This is the project on handwritten Chinese character recognition using CNN super
 ![loss](images/soft_loss_500_35_500_350.png)
 ![acc](images/acc_500_35_500_350.png)
 
+3. Results from work station are not satisfactory
+The testing accuracy settles around only 93~94%
+
+Epoch:2400  Batch size:25
+![loss](images/soft_loss_2400_25.png)
+![acc](images/acc_200_2400_25.png)
+
+Epoch:1200  Batch size:50
+![loss](images/soft_loss_1200_50.png)
+![acc](images/acc_200_1200_50.png)
+
 ### Experiment Notes:
 1. 7th Aug
    - When samples are added up to 500 from 220, the loss converges better.
+2. 8th Aug
+   - The result not good.
+   - The original code is too simple. Once the dataset is enlarged into a enormous scale, there will be problem with memory.
    - Adjustment batch size cannot resolve the problem of sever oscillation of testing accuracy.
    - It might be possible to use more samples to train for a better performance as the ratio of 
