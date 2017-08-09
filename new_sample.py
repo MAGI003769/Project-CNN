@@ -86,7 +86,7 @@ class DataIterator:
 def build_graph(top_k):
     with tf.device('/cpu:0'):
         keep_prob = tf.placeholder(dtype=tf.float32, shape=[], name='keep_prob')
-        images = tf.placeholder(dtype=tf.float32, shape=[None, 64, 64, 10], name='image_batch')
+        images = tf.placeholder(dtype=tf.float32, shape=[None, 64, 64, 1], name='image_batch')
         labels = tf.placeholder(dtype=tf.int64, shape=[None], name='label_batch')
 
         conv_1 = slim.conv2d(images, 100, [3, 3], 1, padding='SAME', scope='conv1')
@@ -275,10 +275,10 @@ def inference(image):
     temp_image = Image.open(image).convert('L')
     temp_image = temp_image.resize((FLAGS.image_size, FLAGS.image_size), Image.ANTIALIAS)
     temp_image = np.asarray(temp_image) / 255.0
-    temp_image = temp_image.reshape([-1, 64, 64, 10])
+    temp_image = temp_image.reshape([-1, 64, 64])
     with tf.Session() as sess:
         logger.info('========start inference============')
-        images = tf.placeholder(dtype=tf.float32, shape=[None, 64, 64, 10])
+        images = tf.placeholder(dtype=tf.float32, shape=[None, 64, 64])
         # Pass a shadow label 0. This label will not affect the computation graph.
         graph = build_graph(top_k=3)
         saver = tf.train.Saver()
