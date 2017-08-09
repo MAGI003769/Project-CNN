@@ -76,4 +76,24 @@ Epoch:1200  Batch size:50
       - The key part is the class `DataIterator` which is initialized with the directory of dataset.
       - For this crucial class, its method `input_pipeline` split the whole dataset and read it into memory. That's where we should pay attention and make some modification to read a 10-channel data. This method returns data for a batch and feed it into the network.
       - The funtion `build_graph` returns a variable of type dictionary taht contains valuable information and variables used of this model.
-   
+   2. For asynchronous reading:
+      ```python
+      def input_pipeline(self, batch_size, num_epochs=None, aug=False):
+        images_tensor = tf.convert_to_tensor(self.image_names, dtype=tf.string)
+        labels_tensor = tf.convert_to_tensor(self.labels, dtype=tf.int64)
+        input_queue = tf.train.slice_input_producer([images_tensor, labels_tensor], num_epochs=num_epochs)
+
+        labels = input_queue[1]
+        images_content = tf.read_file(input_queue[0])
+        images = tf.image.convert_image_dtype(tf.image.decode_png(images_content, channels=1), tf.float32)
+        if aug:
+            images = self.data_augmentation(images)
+        new_size = tf.constant([FLAGS.image_size, FLAGS.image_size], dtype=tf.int32)
+        images = tf.image.resize_images(images, new_size)
+        image_batch, label_batch = tf.train.shuffle_batch([images, labels], batch_size=batch_size, capacity=50000,
+                                                          min_after_dequeue=10000)
+        return image_batch, label_batch
+      ```
+      - Confusion on `input_queue`: what's its shape?
+      - How can I change the reading files from images to .mat?
+        
